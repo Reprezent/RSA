@@ -11,6 +11,7 @@ public class RSA {
 	private BigInteger pubKey;
 	private BigInteger secKey;
 	private BigInteger N;
+	private BigInteger order;
 	private int numBits;
 
 	private BigInteger e;
@@ -19,8 +20,24 @@ public class RSA {
 
 	RSA(int n){
 		numBits = n;
-		N = BigInteger.probablePrime(numBits, new SecureRandom());
+		SecureRandom rand = new SecureRandom();
 
+		//generate p and q
+		BigInteger p = BigInteger.probablePrime(numBits/2, rand); //numBits or numBits/2 c???
+		BigInteger q = BigInteger.probablePrime(numBits/2, rand);
+
+		// N = p*q
+		N = p.multiply(q);
+
+		// order of N = (p-1)(q-1)
+		order =  p.subtract(new BigInteger("1")).multiply(q.subtract(new BigInteger("1")));
+
+		//calculate e that is coprime to order
+		//need to figure out how to do this
+		e = BigInteger.probablePrime(order.bitLength(), rand);
+
+		//d is the modInverse of e with respect to N
+		d = e.modInverse(N);
 	}
 
 	public void writepubKey(String path) throws java.io.IOException{ 
@@ -49,7 +66,7 @@ public class RSA {
 		writer.write(N.toString());
 		writer.newLine();
 
-		//third line contains e
+		//third line contains d
 		writer.write(d.toString());
 	}
 
