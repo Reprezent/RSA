@@ -23,7 +23,7 @@ public class RSA {
 		SecureRandom rand = new SecureRandom();
 
 		//generate p and q
-		BigInteger p = BigInteger.probablePrime(numBits/2, rand); //numBits or numBits/2 c???
+		BigInteger p = BigInteger.probablePrime(numBits/2, rand); 
 		BigInteger q = BigInteger.probablePrime(numBits/2, rand);
 
 		// N = p*q
@@ -36,8 +36,8 @@ public class RSA {
 		//need to figure out how to do this
 		e = BigInteger.probablePrime(order.bitLength(), rand);
 
-		//d is the modInverse of e with respect to N
-		d = e.modInverse(N);
+		//d is the modInverse of e with respect to order
+		d = e.modInverse(order);
 	}
 
 	public void writepubKey(String path) throws java.io.IOException{ 
