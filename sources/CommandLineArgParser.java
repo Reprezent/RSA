@@ -1,6 +1,6 @@
 // Richard Riedel, J.T. Liso, Sean Whalen
 // CS 583 Fall 2017
-// Programming Assignment 1
+// Programming Assignment 2
 //
 
 import java.nio.file.Paths;
