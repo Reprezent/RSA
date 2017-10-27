@@ -33,8 +33,17 @@ public class RSA {
 		order =  p.subtract(new BigInteger("1")).multiply(q.subtract(new BigInteger("1")));
 
 		//calculate e that is coprime to order
-		//need to figure out how to do this
 		e = BigInteger.probablePrime(order.bitLength(), rand);
+
+		//looping until the gcd between order and e is 1
+		while(order.gcd(e).compareTo(new BigInteger("1")) != 0){
+			e = e.add(new BigInteger("1"));
+
+			//getting a new prime number if e >= order
+			if(order.compareTo(e) != 1)
+				e = BigInteger.probablePrime(order.bitLength(), rand);
+		}
+
 
 		//d is the modInverse of e with respect to order
 		d = e.modInverse(order);
