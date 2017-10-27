@@ -12,7 +12,7 @@ import java.lang.Thread;
 
 class CommandLineArgParser
 {
-    public CommandLineArgParser(String[] cmdopts)
+    public CommandLineArgParser(String[] cmdopts, boolean isKeyGen)
     {
 		keyFile = null;
 		inputFile = null;
@@ -100,11 +100,16 @@ class CommandLineArgParser
 			}
 		}
 
-        if(keyFile == null || inputFile == null || outputFile == null || secKeyFile == null || pubKeyFile == null || numBits == -1)
+        if((keyFile == null || inputFile == null || outputFile == null) && !isKeyGen)
         {
-            printUsage();
+            printEncDecUsage();
             System.exit(-1);
         }
+
+		else if((secKeyFile == null || pubKeyFile == null || numBits == -1) && isKeyGen){
+			printKeyGenUsage();
+			System.exit(-1);
+		}
 
     }
    /* 
@@ -117,22 +122,32 @@ class CommandLineArgParser
 
     }
     */
-    private void printUsage()
+    private void printEncDecUsage()
     {
         StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         StackTraceElement main = stack[stack.length - 1];
         String mainClass = main.getClassName();
         System.err.print("usage: java " + mainClass);
-        System.err.println(" -i <input-file> -o <output-file> -k <key-file> -p <publickey-file> -s <secretkey-file> -n <number-of-bits>");
+        System.err.println(" -k <key-file> -i <input-file> -o <output-file>");
         System.err.println("  options:");
-        System.err.println("    -i <input-file>     Specifies an input file to be encrypted/decrypted");
-        System.err.println("    -o <output-file>    Specified an output file for the resulting encryption/decryption to be stored.");
-        System.err.println("    -k <output-file>    Specifies a 128 bit key stored in hexadecimal form.");
+        System.err.println("    -k <key-file>    Specifies a file storing a valid RSA key in the required format.");
+        System.err.println("    -i <input-file>     Specifies the path of the file containing an integer in Zn* in String form (base 10) that is being operated on.");
+        System.err.println("    -o <output-file>    Specifies the path of the file where the resulting output is stored in String form (base 10).");
+        System.err.println();
+    }
+
+	private void printKeyGenUsage(){
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        StackTraceElement main = stack[stack.length - 1];
+        String mainClass = main.getClassName();
+        System.err.print("usage: java " + mainClass);
+		
+        System.err.println(" -p <publickey-file> -s <secretkey-file> -n <number-of-bits>");
         System.err.println("    -p <publickey-file>        Specifies the file to store the public key.");
         System.err.println("    -s <secretkey-file>        Specifies the file to store the private key.");
         System.err.println("    -n <number-of-bits>        Specifies the number of bits in your N.");
         System.err.println();
-    }
+	}
 
     public boolean hasKeyFile()
     {
