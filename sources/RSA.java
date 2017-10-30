@@ -2,6 +2,10 @@
 // COSC 583 Fall 2017
 // Programming Assignment 2
 
+
+import java.nio.file.Paths;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.io.BufferedWriter;
@@ -39,10 +43,11 @@ public class RSA {
 		while(order.gcd(e).compareTo(new BigInteger("1")) != 0){
 			e = e.add(new BigInteger("1"));
 
-			//getting a new prime number if e >= order
-			if(order.compareTo(e) != 1)
-				e = BigInteger.probablePrime(order.bitLength(), rand);
 		}
+		
+		//getting a new prime number if e >= order
+		if(order.compareTo(e) != 1)
+			e = e.mod(order);
 
 
 		//d is the modInverse of e with respect to order
@@ -62,11 +67,14 @@ public class RSA {
 
 		//third line contains e
 		writer.write(e.toString());
+		writer.newLine();
+
+		writer.close();
 	}
 
-	public void writesecKey(String path)throws java.io.IOException{
+	public void writesecKey(String path) throws java.io.IOException{
 		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-		
+
 		//first line contains number of bits in N
 		writer.write(Integer.toString(numBits));
 		writer.newLine();
@@ -77,6 +85,9 @@ public class RSA {
 
 		//third line contains d
 		writer.write(d.toString());
+		writer.newLine();
+		
+		writer.close();
 	}
 
 }

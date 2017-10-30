@@ -214,9 +214,10 @@ class CommandLineArgParser
 		return pubKeyFile != null;
     }
 
-    public Path pubKeyFile()
+    public String pubKeyFile()
     {
-        try
+		return pubKeyFile;
+      /*  try
         {
 		    return Paths.get(pubKeyFile);
         }
@@ -225,7 +226,7 @@ class CommandLineArgParser
             System.err.println(e.getMessage());
         }
 
-        return null;
+        return null;*/
     }
 
 
@@ -234,9 +235,10 @@ class CommandLineArgParser
 		return secKeyFile != null;
     }
 
-    public Path secKeyFile()
+    public String secKeyFile()
     {
-        try
+		return secKeyFile;
+       /* try
         {
 		    return Paths.get(secKeyFile);
         }
@@ -245,7 +247,7 @@ class CommandLineArgParser
             System.err.println(e.getMessage());
         }
 
-        return null;
+        return null;*/
     }
 
     public boolean hasnumBits()
