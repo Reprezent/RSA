@@ -14,8 +14,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class RSA {
-	private BigInteger pubKey;
-	private BigInteger secKey;
 	private BigInteger N;
 	private BigInteger order;
 	private int numBits;
