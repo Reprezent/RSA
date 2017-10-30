@@ -4,7 +4,7 @@
 
 class RSADec {
 	public RSADec(String [] args){
-		//creates a cmd line arg parser for key gen (true)
+		//creates a cmd line arg parser for enc/dec (false)
 		CommandLineArgParser cmd = new CommandLineArgParser(args, false);
 
 		try{
