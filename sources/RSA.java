@@ -83,7 +83,7 @@ public class RSA {
 
 		}
 		
-		//getting a new prime number if e >= order
+		//making e mod the order of the group if e >= order
 		if(order.compareTo(e) != 1)
 			e = e.mod(order);
 
