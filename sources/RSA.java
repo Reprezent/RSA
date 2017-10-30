@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class RSA {
 	private BigInteger pubKey;
@@ -21,7 +23,43 @@ public class RSA {
 	private BigInteger e;
 	private BigInteger d;
 
+	//reads in key file and generates RSA class based on that
+	RSA(String path, boolean enc) throws java.io.IOException{
+		BufferedReader reader = new BufferedReader(new FileReader(path));
 
+			
+		String currLine;
+
+		for(int i = 0; i < 3; i++){
+			currLine = reader.readLine();
+			
+			//exiting if missing info
+			if(currLine == null){
+				System.err.printf("ERROR: invalid key file, line %d%n", i+1);
+				System.exit(1);
+			}
+
+			switch(i){
+				case 0: //first line num bits
+					numBits = Integer.parseInt(currLine);
+					break;
+				case 1: //second line N
+					N = new BigInteger(currLine);
+					break;
+				case 2: //third line e or d
+					if(enc)
+						e = new BigInteger(currLine);
+					else
+						d = new BigInteger(currLine);
+				default: //should never get here, included for completeness
+					break;
+			}
+		}
+
+		reader.close();
+	}
+
+	//generates RSA with n bits for N
 	RSA(int n){
 		numBits = n;
 		SecureRandom rand = new SecureRandom();
@@ -52,6 +90,56 @@ public class RSA {
 
 		//d is the modInverse of e with respect to order
 		d = e.modInverse(order);
+	}
+
+	public void encrypt(String input, String output) throws java.io.IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(output));
+		BufferedReader reader = new BufferedReader(new FileReader(input));
+
+		String currLine = reader.readLine();
+
+		//exiting on bad input
+		if(currLine == null){
+			System.err.println("ERROR: input file read");
+			System.exit(1);
+		}
+
+		reader.close();
+
+		BigInteger msg = new BigInteger(currLine);
+
+		//encrypting...
+		BigInteger encrypted = msg.modPow(e, N);
+
+		//writing encrypted message
+		writer.write(encrypted.toString());
+		writer.newLine();
+		writer.close();
+	}
+
+	public void decrypt(String input, String output) throws java.io.IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(output));
+		BufferedReader reader = new BufferedReader(new FileReader(input));
+
+		String currLine = reader.readLine();
+
+		//exiting on bad input
+		if(currLine == null){
+			System.err.println("ERROR: input file read");
+			System.exit(1);
+		}
+
+		reader.close();
+
+		BigInteger msg = new BigInteger(currLine);
+
+		//decrypting...
+		BigInteger decrypted = msg.modPow(d, N);
+
+		//writing decrypted message
+		writer.write(decrypted.toString());
+		writer.newLine();
+		writer.close();
 	}
 
 	public void writepubKey(String path) throws java.io.IOException{ 

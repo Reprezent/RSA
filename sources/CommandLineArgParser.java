@@ -155,9 +155,10 @@ class CommandLineArgParser
     }
     
 
-    public Path getKeyFile()
+    public String getKeyFile()
     {
-        try
+		return keyFile;
+        /*try
         {
 		    return Paths.get(keyFile);
         }
@@ -166,7 +167,7 @@ class CommandLineArgParser
             System.err.println(e.getMessage());
         }
 
-        return null;
+        return null;*/
     }
 
     public boolean hasInputFile()
@@ -174,9 +175,10 @@ class CommandLineArgParser
 		return inputFile != null;
     }
 
-    public Path getInputFile()
+    public String getInputFile()
     {
-        try
+		return inputFile;
+        /*try
         {
 		    return Paths.get(inputFile);
         }
@@ -185,7 +187,7 @@ class CommandLineArgParser
             System.err.println(e.getMessage());
         }
 
-        return null;
+        return null;*/
     }
 
 
@@ -195,9 +197,10 @@ class CommandLineArgParser
     }
 
 
-    public Path getOutputFile()
+    public String getOutputFile()
     {
-        try
+		return outputFile;
+        /*try
         {
 		    return Paths.get(outputFile);
         }
@@ -206,7 +209,7 @@ class CommandLineArgParser
             System.err.println(e.getMessage());
         }
 
-        return null;
+        return null;*/
     }
 
     public boolean haspubKeyFile()
