@@ -14,6 +14,6 @@ class RSADec {
 	}
 
 	public static void main(String[] args){
-		new RSAEnc(args);
+		new RSADec(args);
 	}
 }

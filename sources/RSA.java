@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
 
 public class RSA {
 	private BigInteger N;
@@ -93,7 +94,7 @@ public class RSA {
 	public void encrypt(String input, String output) throws java.io.IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(output));
 		BufferedReader reader = new BufferedReader(new FileReader(input));
-
+		SecureRandom rand = new SecureRandom();
 		String currLine = reader.readLine();
 
 		//exiting on bad input
@@ -106,10 +107,49 @@ public class RSA {
 
 		BigInteger msg = new BigInteger(currLine);
 
-		//encrypting...
-		BigInteger encrypted = msg.modPow(e, N);
+		//padding
+		byte [] m = msg.toByteArray();
+		int numRandBytes = this.numBits / 8 - 3 - m.length;
+		byte [] r = new byte[numRandBytes];
+		byte [] message = new byte[3 + r.length + m.length];
+		//System.out.println(Integer.toString(3+r.length+m.length));
+		//System.out.println(Integer.toString(this.numBits / 8));
+		boolean wasZeroByte = true;
 
-		//writing encrypted message
+		if (message.length > this.numBits/8) {
+			System.err.println("ERROR: message length exceeds N length, try a larger key or smaller message\n");
+			writer.close();
+			return;
+		}
+		
+		//make sure no random byte is 0x00
+		while(wasZeroByte) {
+			wasZeroByte = false;
+			rand.nextBytes(r);
+			for (byte b : r) {
+				if (b == (byte)0x00) {
+					wasZeroByte = true;
+					break;
+				}
+			}
+		}
+
+		//concat elements into message
+		int i=0;
+		message[i++] = (byte)0x00;
+		message[i++] = (byte)0x02;
+		for (byte b : r) 
+			message[i++] = b;
+		message[i++] = (byte)0x00;
+		for (byte b : m)
+			message[i++] = b;
+
+		//encrypt integer representation of message
+		BigInteger padded = new BigInteger(message);
+		//System.out.println(padded.toString());
+		BigInteger encrypted = padded.modPow(e,N);
+
+		//writing encrypted message    
 		writer.write(encrypted.toString());
 		writer.newLine();
 		writer.close();
@@ -122,7 +162,7 @@ public class RSA {
 		String currLine = reader.readLine();
 
 		//exiting on bad input
-		if(currLine == null){
+		if(currLine == null) {
 			System.err.println("ERROR: input file read");
 			System.exit(1);
 		}
@@ -130,12 +170,37 @@ public class RSA {
 		reader.close();
 
 		BigInteger msg = new BigInteger(currLine);
-
+		
 		//decrypting...
 		BigInteger decrypted = msg.modPow(d, N);
+		//System.err.println(decrypted.toString());
+
+		//unpadding
+		byte [] padded = decrypted.toByteArray();
+		if (padded.length < 3) {
+			System.err.println("ERROR: decrypted message is empty, no decryption written");
+			writer.close();
+			return;
+		}
+		//System.out.println(Integer.toString(padded.length));
+		// skip the FIRST byte, why not first two (0x00 and 0x02)?
+		// answer: the prepended 0x00 byte disappears 
+		// with conversion to bigInt bc it has 
+		// no effect on int val, the 0x02 does however
+		int i;
+		for (i=1; i<padded.length; i++) {
+			if (padded[i] == (byte)0x00)
+				break;
+		}
+		// I didn't incr i again to avoid 
+		// array out of bound error possiblities
+		// and again 0x00 prepended doesn't change val
+		// anyway
+		byte [] m = Arrays.copyOfRange(padded, i, padded.length);
+		BigInteger decUnpadded  = new BigInteger(m);
 
 		//writing decrypted message
-		writer.write(decrypted.toString());
+		writer.write(decUnpadded.toString());
 		writer.newLine();
 		writer.close();
 	}
