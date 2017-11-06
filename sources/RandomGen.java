@@ -18,7 +18,7 @@ public class RandomGen
         }
         while(!isPrime(rv));
 
-        return rv;
+        return rv.abs();
     }
 
 

@@ -50,6 +50,7 @@ public class RSA {
 						e = new BigInteger(currLine);
 					else
 						d = new BigInteger(currLine);
+                    break;
 				default: //should never get here, included for completeness
 					break;
 			}
@@ -64,8 +65,10 @@ public class RSA {
 		SecureRandom rand = new SecureRandom();
 
 		//generate p and q
-		BigInteger p = BigInteger.probablePrime(numBits/2, rand); 
-		BigInteger q = BigInteger.probablePrime(numBits/2, rand);
+		//  BigInteger p = BigInteger.probablePrime(numBits/2, rand); 
+		//  BigInteger q = BigInteger.probablePrime(numBits/2, rand);
+		BigInteger p = RandomGen.Generate(numBits/2);
+		BigInteger q = RandomGen.Generate(numBits/2);
 
 		// N = p*q
 		N = p.multiply(q);
@@ -74,7 +77,7 @@ public class RSA {
 		order =  p.subtract(new BigInteger("1")).multiply(q.subtract(new BigInteger("1")));
 
 		//calculate e that is coprime to order
-		e = BigInteger.probablePrime(order.bitLength(), rand);
+		e = RandomGen.Generate(order.bitLength());
 
 		//looping until the gcd between order and e is 1
 		while(order.gcd(e).compareTo(new BigInteger("1")) != 0){
@@ -110,6 +113,9 @@ public class RSA {
 		//padding
 		byte [] m = msg.toByteArray();
 		int numRandBytes = this.numBits / 8 - 3 - m.length;
+
+        System.err.printf("Number of random bytes: %d%nNumber of random bits %d%n", numRandBytes, this.numBits);
+
 		byte [] r = new byte[numRandBytes];
 		byte [] message = new byte[3 + r.length + m.length];
 		//System.out.println(Integer.toString(3+r.length+m.length));

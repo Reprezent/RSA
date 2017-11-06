@@ -12,7 +12,7 @@ all:
 	mkdir -p $(CLASSPATH)
 	$(JC) $(JFLAGS) -d $(CLASSPATH) $(SOURCES)
 
-random_hex: sources/random_hex.cpp
+random_bytes: sources/random_bytes.cpp
 	g++ -Wall -std=c++11 -o $@ $<
 
 .PHONY: clean
