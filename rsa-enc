@@ -1,2 +1,2 @@
 #! /bin/sh
-java -cp classes RSAEnc "$@"
+java -cp $(dirname $0)/classes RSAEnc "$@"

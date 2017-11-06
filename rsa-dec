@@ -1,2 +1,2 @@
 #! /bin/sh
-java -cp classes RSADec "$@"
+java -cp $(dirname $0)/classes RSADec "$@"
