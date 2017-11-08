@@ -78,18 +78,18 @@ public class RSA {
 		order =  p.subtract(new BigInteger("1")).multiply(q.subtract(new BigInteger("1")));
 
 		//calculate e that is coprime to order
-		e = RandomGen.Generate(order.bitLength());
+		//e = RandomGen.Generate(order.bitLength());
+		e = new BigInteger("5");
 
 		//looping until the gcd between order and e is 1
-		while(order.gcd(e).compareTo(new BigInteger("1")) != 0){
-			e = e.add(new BigInteger("1"));
-
+		while(order.gcd(e).compareTo(BigInteger.ONE) != 0) {
+			e = e.add(BigInteger.ONE);
 		}
+
 		
 		//making e mod the order of the group if e >= order
 		if(order.compareTo(e) != 1)
 			e = e.mod(order);
-
 
 		//d is the modInverse of e with respect to order
 		d = e.modInverse(order);
@@ -159,7 +159,8 @@ public class RSA {
 		//encrypt integer representation of message
 		BigInteger padded = new BigInteger(message);
 		//System.out.println(padded.toString());
-		BigInteger encrypted = padded.modPow(e,N);
+		// use our own modPow implementation
+		BigInteger encrypted = modPow.compute(padded, e, N); //padded.modPow(e,N);
 
 		//writing encrypted message    
 		writer.write(encrypted.toString());
@@ -183,8 +184,8 @@ public class RSA {
 
 		BigInteger msg = new BigInteger(currLine);
 		
-		//decrypting...
-		BigInteger decrypted = msg.modPow(d, N);
+		//decrypting using our own modPow implemenation
+		BigInteger decrypted = modPow.compute(msg, d, N); //msg.modPow(d, N);
 		//System.err.println(decrypted.toString());
 
 		//unpadding
