@@ -12,7 +12,7 @@ all:
 	mkdir -p $(CLASSPATH)
 	$(JC) $(JFLAGS) -d $(CLASSPATH) $(SOURCES)
 
-random_bytes: sources/random_bytes.cpp
+test_inputs: $(SOURCE_DIR)/test_inputs.cpp
 	g++ -Wall -std=c++11 -o $@ $<
 
 .PHONY: clean

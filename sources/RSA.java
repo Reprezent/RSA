@@ -3,6 +3,7 @@
 // Programming Assignment 2
 
 
+import java.lang.Math;
 import java.nio.file.Paths;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -112,9 +113,14 @@ public class RSA {
 
 		//padding
 		byte [] m = msg.toByteArray();
-		int numRandBytes = this.numBits / 8 - 3 - m.length;
+		//int numRandBytes = (int)Math.round((double)this.numBits / 8) - 3 - m.length;
+        int numRandBytes = this.numBits / 8 - 3 - m.length;
 
-        System.err.printf("Number of random bytes: %d%nNumber of random bits %d%n", numRandBytes, this.numBits);
+       // System.err.printf("Number of random bytes: %d%nNumber of random bits %d%n", numRandBytes, this.numBits);
+/*       System.err.printf("Number of bits in the input: %8d%n", msg.bitLength());
+       System.err.printf("Number of bits in the key:   %8d%n", this.numBits);
+       System.err.printf("Number of random bytes:      %8d%n", numRandBytes);
+       */
 
 		byte [] r = new byte[numRandBytes];
 		byte [] message = new byte[3 + r.length + m.length];

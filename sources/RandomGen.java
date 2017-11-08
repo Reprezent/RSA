@@ -7,6 +7,11 @@ import java.security.SecureRandom;
 
 public class RandomGen
 {
+    private class BitSieve
+    {
+
+
+    }
     private static final BigInteger TWO = new BigInteger("2");
     static BigInteger Generate(int numBits)
     {
@@ -14,14 +19,17 @@ public class RandomGen
         BigInteger rv;
         do
         {
-            rv = new BigInteger(numBits, gen);
+            // Just set the bit then test, rather than generate a prime until
+            rv = new BigInteger(numBits, gen).setBit(numBits - 1);
         }
+        // Test if the top most bit is set.
         while(!isPrime(rv));
 
         return rv.abs();
     }
 
 
+    // Miller-Rabian Primality Test
     static boolean isPrime(BigInteger val, long numIterations)
     {
         SecureRandom gen = new SecureRandom();
